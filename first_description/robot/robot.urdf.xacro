@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="first">
+
+  <!-- Global constants -->
+  <xacro:property name="pi" value="3.1415926535897931"/>
+
+  <!-- Included files -->
+  <xacro:include filename="$(find first_description)/urdf/materials.urdf.xacro"/>
+  <xacro:include filename="$(find first_description)/urdf/common.urdf.xacro"/>
+
+  <!-- Robot properties -->
+  <xacro:property name="base_width" value="0.03"/>
+  <xacro:property name="base_length" value="0.05"/>
+  <xacro:property name="base_height" value="0.05"/>
+
+  <xacro:property name="wheel_width" value="0.001"/>
+  <xacro:property name="wheel_radius" value="0.04"/>
+
+  <xacro:property name="wheel_holder_width" value="0.01"/>
+
+  <link name="base_link">
+    <visual>
+      <xacro:box_geometry width="${base_width}" depth="${base_length}" height="${base_height}"/>
+      <xacro:white_material/>
+    </visual>
+    <xacro:box_collision width="${base_width}" depth="${base_length}" height="${base_height}"/>
+    <xacro:box_inertia mass="10" width="${base_width}" depth="${base_length}" height="${base_height}"/>
+  </link>
+
+
+  <link name="wheel_holder">
+    <visual>
+      <xacro:box_geometry width="${wheel_holder_width}" height="${wheel_holder_width}"
+                          depth="${wheel_radius + wheel_holder_width*2}"/>
+      <xacro:green_material/>
+    </visual>
+    <xacro:box_collision width="${wheel_holder_width}" height="${wheel_holder_width}"
+                         depth="${wheel_radius + wheel_holder_width*2}"/>
+    <xacro:box_inertia mass="0.003" width="${wheel_holder_width}" height="${wheel_holder_width}"
+                       depth="${wheel_radius + wheel_holder_width*2}"/>
+  </link>
+
+  <joint name="base_to_wheel_holder" type="fixed">
+    <parent link="base_link"/>
+    <child link="wheel_holder"/>
+    <origin xyz="${base_width/2} ${base_length/2} ${base_height/2 + wheel_holder_width}" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="wheel">
+    <visual>
+      <xacro:cylinder_geometry radius="${wheel_radius}" height="${wheel_width}"/>
+      <xacro:black_material/>
+    </visual>
+    <xacro:cylinder_collision radius="${wheel_radius}" height="${wheel_width}"/>
+    <xacro:cylinder_inertia mass="0.03" radius="${wheel_radius}" height="${wheel_width}"/>
+    <dynamics damping="0.01" friction="100.0" />
+  </link>
+
+  <joint name="wheel_holder_to_wheel" type="continuous">
+    <parent link="wheel_holder"/>
+    <child link="wheel"/>
+    <origin xyz="0 ${wheel_holder_width/2 + wheel_width/2} ${-wheel_radius/2 - wheel_holder_width/2}"
+            rpy="0 ${-pi/2} ${-pi/2}" />
+    <axis xyz="0 0 1" />
+    <limit effort="100" velocity="100" />
+    <dynamics damping="0.01" friction="100.0" />
+  </joint>
+
+  <transmission name="wheel_transmission">
+     <type>transmission_interface/SimpleTransmission</type>
+     <joint name="wheel_holder_to_wheel">
+       <hardwareInterface>EffortJointInterface</hardwareInterface>
+     </joint>
+     <actuator name="wheel_motor">
+       <hardwareInterface>EffortJointInterface</hardwareInterface>
+       <mechanicalReduction>1</mechanicalReduction>
+     </actuator>
+  </transmission>
+
+</robot>
+
+
