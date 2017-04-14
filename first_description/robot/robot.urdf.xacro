@@ -13,37 +13,34 @@
   <xacro:property name="base_length" value="0.05"/>
   <xacro:property name="base_height" value="0.05"/>
 
-  <xacro:property name="wheel_width" value="0.001"/>
+  <xacro:property name="wheel_width" value="0.01"/>
   <xacro:property name="wheel_radius" value="0.04"/>
 
-  <xacro:property name="wheel_holder_width" value="0.01"/>
+  <xacro:property name="wheel_holder_size" value="0.01"/>
 
   <link name="base_link">
     <visual>
-      <xacro:box_geometry width="${base_width}" depth="${base_length}" height="${base_height}"/>
+      <xacro:box_geometry width="${base_width}" depth="${base_height}" height="${base_length}"/>
       <xacro:white_material/>
     </visual>
-    <xacro:box_collision width="${base_width}" depth="${base_length}" height="${base_height}"/>
-    <xacro:box_inertia mass="10" width="${base_width}" depth="${base_length}" height="${base_height}"/>
+    <xacro:box_collision width="${base_width}" depth="${base_height}" height="${base_length}"/>
+    <xacro:box_inertia mass="0.2" width="${base_width}" depth="${base_height}" height="${base_length}"/>
   </link>
-
 
   <link name="wheel_holder">
     <visual>
-      <xacro:box_geometry width="${wheel_holder_width}" height="${wheel_holder_width}"
-                          depth="${wheel_radius + wheel_holder_width*2}"/>
+      <xacro:box_geometry width="${wheel_holder_size}" height="${wheel_holder_size}" depth="${wheel_holder_size}"/>
       <xacro:green_material/>
     </visual>
-    <xacro:box_collision width="${wheel_holder_width}" height="${wheel_holder_width}"
-                         depth="${wheel_radius + wheel_holder_width*2}"/>
-    <xacro:box_inertia mass="0.003" width="${wheel_holder_width}" height="${wheel_holder_width}"
-                       depth="${wheel_radius + wheel_holder_width*2}"/>
+    <xacro:box_collision width="${wheel_holder_size}" height="${wheel_holder_size}" depth="${wheel_holder_size}"/>
+    <xacro:box_inertia mass="0.003" width="${wheel_holder_size}" height="${wheel_holder_size}"
+                       depth="${wheel_holder_size}"/>
   </link>
 
   <joint name="base_to_wheel_holder" type="fixed">
     <parent link="base_link"/>
     <child link="wheel_holder"/>
-    <origin xyz="${base_width/2} ${base_length/2} ${base_height/2 + wheel_holder_width}" rpy="0 0 0" />
+    <origin xyz="0 0 ${base_height/2 + wheel_holder_size/2}" rpy="0 0 0" />
     <axis xyz="0 0 1" />
   </joint>
 
@@ -57,11 +54,10 @@
     <dynamics damping="0.01" friction="100.0" />
   </link>
 
-  <joint name="wheel_holder_to_wheel" type="continuous">
+  <joint name="wheel_joint" type="continuous">
     <parent link="wheel_holder"/>
     <child link="wheel"/>
-    <origin xyz="0 ${wheel_holder_width/2 + wheel_width/2} ${-wheel_radius/2 - wheel_holder_width/2}"
-            rpy="0 ${-pi/2} ${-pi/2}" />
+    <origin xyz="0 0 ${wheel_width/2 + wheel_holder_size/2}" rpy="0 0 0" />
     <axis xyz="0 0 1" />
     <limit effort="100" velocity="100" />
     <dynamics damping="0.01" friction="100.0" />
@@ -69,7 +65,7 @@
 
   <transmission name="wheel_transmission">
      <type>transmission_interface/SimpleTransmission</type>
-     <joint name="wheel_holder_to_wheel">
+     <joint name="wheel_joint">
        <hardwareInterface>EffortJointInterface</hardwareInterface>
      </joint>
      <actuator name="wheel_motor">
