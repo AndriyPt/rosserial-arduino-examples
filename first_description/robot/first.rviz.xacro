@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="first">
 
-  <!-- Main file -->
   <xacro:include filename="$(find first_description)/robot/robot.urdf.xacro"/>
 
 </robot>

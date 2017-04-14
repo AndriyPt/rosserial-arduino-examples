@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="first">
+
+  <xacro:include filename="$(find first_description)/robot/robot.urdf.xacro"/>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/first</robotNamespace>
+    </plugin>
+  </gazebo>
+
+ <gazebo reference="base_link">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <gazebo reference="wheel_holder">
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+  <gazebo reference="wheel">
+    <material>Gazebo/Black</material>
+  </gazebo>
+</robot>
+

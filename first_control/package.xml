@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>first_control</name>
+  <version>0.0.0</version>
+  <description>The first_control package</description>
+
+  <maintainer email="Andriy.Petlovanyy@todo.todo">Andriy Petlovanyy</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>ros_control</build_depend>
+  <build_depend>ros_controllers</build_depend>
+  <run_depend>ros_control</run_depend>
+  <run_depend>ros_controllers</run_depend>
+
+</package>
