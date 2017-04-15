@@ -9,9 +9,11 @@
   <license>MIT</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>ros_control</build_depend>
-  <build_depend>ros_controllers</build_depend>
-  <run_depend>ros_control</run_depend>
-  <run_depend>ros_controllers</run_depend>
+  <build_depend>joint_state_controller</build_depend>
+  <build_depend>velocity_controllers</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <run_depend>velocity_controllers</run_depend>
+  <run_depend>controller_manager</run_depend>
 
 </package>
