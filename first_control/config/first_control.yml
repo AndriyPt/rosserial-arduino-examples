@@ -1,12 +1,12 @@
-first:
-  joint_state_controller:
-    type: joint_state_controller/JointStateController
-    publish_rate: 50
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
 
-  wheel_velocity_controller:
-    type: velocity_controllers/JointVelocityController
-    joint: wheel_joint
-    pid:
-      p: 100.0
-      i: 0.0
-      d: 0.0
+wheel_velocity_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: wheel_joint
+  pid:
+    p: 10.0
+    i: 0.0
+    d: 0.0
+    i_clamp: 1000.0

@@ -1,11 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(first_control)
 
-find_package(catkin REQUIRED COMPONENTS
-  velocity_controllers
-  joint_state_controller
-  controller_manager
-)
+find_package(catkin REQUIRED)
 
 catkin_package(
   CATKIN_DEPENDS velocity_controllers joint_state_controller controller_manager

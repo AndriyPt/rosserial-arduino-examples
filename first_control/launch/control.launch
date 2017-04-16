@@ -3,12 +3,10 @@
   <rosparam file="$(find first_control)/config/first_control.yml" command="load"/>
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-    output="screen" ns="/first" args="joint_state_controller wheel_velocity_controller"/>
+    output="screen" args="joint_state_controller wheel_velocity_controller"/>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-    respawn="false" output="screen">
-    <remap from="/joint_states" to="/first/joint_states" />
-  </node>
+    respawn="false" output="screen"/>
 
 </launch>
