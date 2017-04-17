@@ -1,5 +1,5 @@
 <library path="lib/libfirst_hardware">
-  <class name="first_hardware/FirstRobot" type="first_hardware::FirstRobot" base_class_type="hardware_interface::RobotHW">
+  <class name="first_hardware/FirstRobotHW" type="first_hardware::FirstRobotHW" base_class_type="hardware_interface::RobotHW">
   <description>
     A Robot hardware for first robot
   </description>

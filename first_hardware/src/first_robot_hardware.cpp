@@ -1,29 +1,57 @@
 #include "first_hardware/first_robot_hardware.h"
+#include "first_msgs/GetMotorSpeed.h"
+#include <std_msgs/Float32.h>
+#include <hardware_interface/robot_hw.h>
+#include <pluginlib/class_list_macros.h>
 #include <string>
 #include <vector>
 
 namespace first_hardware
 {
 
-  FirstRobot::FirstRobot()
+  FirstRobotHW::FirstRobotHW()
   {
-   // connect and register the joint state interface
-   hardware_interface::JointStateHandle state_handle_a("A", &pos[0], &vel[0], &eff[0]);
-   jnt_state_interface.registerHandle(state_handle_a);
+  }
 
-   hardware_interface::JointStateHandle state_handle_b("B", &pos[1], &vel[1], &eff[1]);
-   jnt_state_interface.registerHandle(state_handle_b);
+  FirstRobotHW::~FirstRobotHW()
+  {
+  }
 
-   registerInterface(&jnt_state_interface);
+  bool FirstRobotHW::init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh)
+  {
 
-   // connect and register the joint position interface
-   hardware_interface::JointHandle pos_handle_a(jnt_state_interface.getHandle("A"), &cmd[0]);
-   jnt_pos_interface.registerHandle(pos_handle_a);
+   motor_speed_service = root_nh.serviceClient<first_msgs::GetMotorSpeed>("get_motor_velocity");
+   publish_effort = root_nh.advertise<std_msgs::Float32>("send_motor_1_effort", 1000);
 
-   hardware_interface::JointHandle pos_handle_b(jnt_state_interface.getHandle("B"), &cmd[1]);
-   jnt_pos_interface.registerHandle(pos_handle_b);
+   hardware_interface::JointStateHandle wheel_joint_state_handle("wheel_joint", &position[0], &velocity[0], &effort[0]);
+   joint_state_interface.registerHandle(wheel_joint_state_handle);
 
-   registerInterface(&jnt_pos_interface);
+   registerInterface(&joint_state_interface);
+
+   hardware_interface::JointHandle wheel_joint_effort_handler(joint_state_interface.getHandle("wheel_joint"),
+       &command[0]);
+   joint_effort_interface.registerHandle(wheel_joint_effort_handler);
+
+   registerInterface(&joint_effort_interface);
+  }
+
+  void FirstRobotHW::read(const ros::Time& time, const ros::Duration& period)
+  {
+    first_msgs::GetMotorSpeed message;
+    message.request.motor_index = 0;
+    if (motor_speed_service.call(message))
+    {
+      velocity[0] = message.response.velocity;
+    }
+  }
+
+  void FirstRobotHW::write(const ros::Time& time, const ros::Duration& period)
+  {
+    std_msgs::Float32 message;
+    message.data = command[0];
+    publish_effort.publish(message);
   }
 
 }  // first_hardware
+
+PLUGINLIB_EXPORT_CLASS(first_hardware::FirstRobotHW, hardware_interface::RobotHW)

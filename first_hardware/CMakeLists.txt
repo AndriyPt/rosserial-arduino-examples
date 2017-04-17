@@ -8,12 +8,13 @@ find_package(catkin REQUIRED COMPONENTS
   controller_manager
   roscpp
   std_msgs
+  first_msgs
 )
 
 catkin_package(
    INCLUDE_DIRS include
    LIBRARIES first_hardware
-   CATKIN_DEPENDS hardware_interface controller_manager roscpp std_msgs
+   CATKIN_DEPENDS hardware_interface controller_manager roscpp std_msgs first_msgs
 )
 
 include_directories(include)
