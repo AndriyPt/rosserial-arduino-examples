@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>first_hardware</name>
+  <version>0.0.0</version>
+  <description>The first_hardware package</description>
+
+  <maintainer email="Andriy.Petlovanyy@todo.todo">Andriy Petlovanyy</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>hardware_interface</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>controller_manager</build_depend>
+  <run_depend>hardware_interface</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>controller_manager</run_depend>
+
+  <export>
+    <hardware_interface plugin="${prefix}/robot_hardware_plugin.xml"/>
+  </export>
+
+</package>
