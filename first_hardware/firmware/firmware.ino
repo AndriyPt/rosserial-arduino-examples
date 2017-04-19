@@ -8,6 +8,7 @@ float currentEffort = 0.0;
 void commandCallback(const std_msgs::Float32& command_message)
 {
   currentEffort = command_message.data;
+  digitalWrite(13, HIGH-digitalRead(13));   // blink the led
 }
 
 void getMotorVelocity(const first_msgs::GetMotorSpeed::Request  &request, first_msgs::GetMotorSpeed::Response &response)
@@ -22,6 +23,7 @@ ros::ServiceServer<first_msgs::GetMotorSpeed::Request, first_msgs::GetMotorSpeed
 void setup()
 {
   nh.initNode();
+  pinMode(13, OUTPUT);
   nh.subscribe(effort_command_subscriber);
   nh.advertiseService(motor_velocity_service);
 }

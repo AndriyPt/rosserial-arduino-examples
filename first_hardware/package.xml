@@ -19,6 +19,8 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>controller_manager</run_depend>
   <run_depend>first_msgs</run_depend>
+  <run_depend>rosserial</run_depend>
+  <run_depend>rosserial_arduino</run_depend>
 
   <export>
     <hardware_interface plugin="${prefix}/robot_hardware_plugin.xml"/>

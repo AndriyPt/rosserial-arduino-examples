@@ -1,0 +1,3 @@
+<launch>
+    <include file="$(find first_gazebo)/launch/gazebo.launch" />
+</launch>

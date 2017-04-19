@@ -4,5 +4,5 @@ project(first_control)
 find_package(catkin REQUIRED)
 
 catkin_package(
-  CATKIN_DEPENDS velocity_controllers joint_state_controller controller_manager
+  CATKIN_DEPENDS effort_controllers joint_state_controller controller_manager
 )

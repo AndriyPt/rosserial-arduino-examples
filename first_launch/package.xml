@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>first_launch</name>
+  <version>0.0.0</version>
+  <description>The first_launch package</description>
+
+  <maintainer email="Andriy.Petlovanyy@todo.todo">Andriy Petlovanyy</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>first_gazebo</run_depend>
+  <run_depend>first_control</run_depend>
+  <run_depend>first_description</run_depend>
+  <run_depend>first_hardware</run_depend>
+  <run_depend>rosserial_python</run_depend>
+
+</package>

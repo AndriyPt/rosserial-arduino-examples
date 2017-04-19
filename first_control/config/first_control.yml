@@ -3,7 +3,7 @@ joint_state_controller:
   publish_rate: 50
 
 wheel_velocity_controller:
-  type: velocity_controllers/JointVelocityController
+  type: effort_controllers/JointVelocityController
   joint: wheel_joint
   pid:
     p: 10.0

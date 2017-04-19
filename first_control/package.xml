@@ -10,7 +10,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>joint_state_controller</run_depend>
-  <run_depend>velocity_controllers</run_depend>
+  <run_depend>effort_controllers</run_depend>
   <run_depend>controller_manager</run_depend>
 
 </package>
