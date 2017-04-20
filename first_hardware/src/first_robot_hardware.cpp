@@ -2,7 +2,6 @@
 #include "first_msgs/GetMotorSpeed.h"
 #include <std_msgs/Float32.h>
 #include <hardware_interface/robot_hw.h>
-#include <pluginlib/class_list_macros.h>
 #include <string>
 #include <vector>
 
@@ -19,20 +18,20 @@ namespace first_hardware
 
   bool FirstRobotHW::init(ros::NodeHandle& root_nh, ros::NodeHandle &robot_hw_nh)
   {
+    ros::service::waitForService("get_motor_velocity");
+    motor_speed_service = root_nh.serviceClient<first_msgs::GetMotorSpeed>("get_motor_velocity");
+    publish_effort = root_nh.advertise<std_msgs::Float32>("send_motor_1_effort", 1000);
 
-   motor_speed_service = root_nh.serviceClient<first_msgs::GetMotorSpeed>("get_motor_velocity");
-   publish_effort = root_nh.advertise<std_msgs::Float32>("send_motor_1_effort", 1000);
+    hardware_interface::JointStateHandle wheel_joint_state_handle("wheel_joint", &position[0], &velocity[0], &effort[0]);
+    joint_state_interface.registerHandle(wheel_joint_state_handle);
 
-   hardware_interface::JointStateHandle wheel_joint_state_handle("wheel_joint", &position[0], &velocity[0], &effort[0]);
-   joint_state_interface.registerHandle(wheel_joint_state_handle);
+    registerInterface(&joint_state_interface);
 
-   registerInterface(&joint_state_interface);
+    hardware_interface::JointHandle wheel_joint_effort_handler(joint_state_interface.getHandle("wheel_joint"),
+      &command[0]);
+    joint_effort_interface.registerHandle(wheel_joint_effort_handler);
 
-   hardware_interface::JointHandle wheel_joint_effort_handler(joint_state_interface.getHandle("wheel_joint"),
-       &command[0]);
-   joint_effort_interface.registerHandle(wheel_joint_effort_handler);
-
-   registerInterface(&joint_effort_interface);
+    registerInterface(&joint_effort_interface);
   }
 
   void FirstRobotHW::read(const ros::Time& time, const ros::Duration& period)
@@ -53,5 +52,3 @@ namespace first_hardware
   }
 
 }  // first_hardware
-
-PLUGINLIB_EXPORT_CLASS(first_hardware::FirstRobotHW, hardware_interface::RobotHW)

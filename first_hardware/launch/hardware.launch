@@ -1,0 +1,3 @@
+<launch>
+    <node name="first_hardware_node" pkg="first_hardware" type="first_hardware_node" respawn="false" output="screen"/>
+</launch>

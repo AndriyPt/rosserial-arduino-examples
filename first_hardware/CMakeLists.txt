@@ -22,13 +22,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(${PROJECT_NAME}
-  src/first_robot_hardware.cpp
+add_executable(${PROJECT_NAME}_node src/first_robot_hardware.cpp src/hardware_node.cpp)
+
+add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(${PROJECT_NAME}_node
+  ${catkin_LIBRARIES}
 )
 
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS ${PROJECT_NAME}_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
