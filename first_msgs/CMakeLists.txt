@@ -7,9 +7,9 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-add_service_files(
+add_message_files(
   FILES
-  GetMotorSpeed.srv
+  JointState.msg
 )
 
 generate_messages(

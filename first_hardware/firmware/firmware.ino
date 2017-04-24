@@ -1,84 +1,71 @@
 #include <ros.h>
 #include <std_msgs/Float32.h>
-#include <first_msgs/GetMotorSpeed.h>
+#include <first_msgs/JointState.h>
 
-//declare variables for the motor pins (based on http://www.4tronix.co.uk/arduino/Stepper-Motors.php)
-int motorPin1 = 38;
-int motorPin2 = 40;
-int motorPin3 = 42;
-int motorPin4 = 44;
-int lookup[8] = {B01000, B01100, B00100, B00110, B00010, B00011, B00001, B01001};
+ros::NodeHandle node_handle;
+first_msgs::JointState joint_state_message;
+const int motorPwmPin = 10;
+const int buildInLedPin = 13;
+const int encoderPin = 50;
+const float radiansPerEncoderPulse = PI / 10;
 
-ros::NodeHandle nh;
-float currentEffort = 0.0;
+int motorDutyCycle = 0;
+volatile byte encoderPulses = 0;
+unsigned int updateFrequency = 50;
+unsigned long lastMeasuredTime = 0;
 
 void commandCallback(const std_msgs::Float32& command_message)
 {
-  currentEffort = command_message.data;
-  digitalWrite(13, HIGH-digitalRead(13));   // blink the led
+  joint_state_message.effort = command_message.data;
+  motorDutyCycle = map((int)joint_state_message.effort, 0, 10, 0, 255);
+  analogWrite(motorPwmPin, motorDutyCycle);
+  digitalWrite(buildInLedPin, HIGH-digitalRead(buildInLedPin));
 }
 
-void getMotorVelocity(const first_msgs::GetMotorSpeed::Request  &request, first_msgs::GetMotorSpeed::Response &response)
+void encoderPulsesCounter()
 {
-  response.velocity = 10.0 * currentEffort;
+  encoderPulses++;    
 }
 
-ros::Subscriber<std_msgs::Float32> effort_command_subscriber("send_motor_1_effort", &commandCallback);
-ros::ServiceServer<first_msgs::GetMotorSpeed::Request, first_msgs::GetMotorSpeed::Response> motor_velocity_service(
-  "get_motor_velocity", &getMotorVelocity);
+ros::Subscriber<std_msgs::Float32> effort_command_subscriber("hardware_set_motor_effort", &commandCallback);
+ros::Publisher joint_state_publisher("hardware_motor_state", &joint_state_message);
 
 void setup()
 {
-  pinMode(motorPin1, OUTPUT);
-  pinMode(motorPin2, OUTPUT);
-  pinMode(motorPin3, OUTPUT);
-  pinMode(motorPin4, OUTPUT);
-  
-  nh.initNode();
-  pinMode(13, OUTPUT);
-  nh.subscribe(effort_command_subscriber);
-  nh.advertiseService(motor_velocity_service);
+  pinMode(motorPwmPin, OUTPUT);
+  pinMode(buildInLedPin, OUTPUT);
+  pinMode(encoderPin, INPUT);
+
+  joint_state_message.position = 0.0;
+  joint_state_message.velocity = 0.0;
+  joint_state_message.effort = 0.0;
+   
+  attachInterrupt(0, encoderPulsesCounter, FALLING);
+
+  node_handle.initNode();
+  node_handle.subscribe(effort_command_subscriber);
+  node_handle.advertise(joint_state_publisher);
 }
 
 void loop()
 {
-  int integerEffort = min((int)(abs(currentEffort)), 5000);
-  int timeout = 5010 - integerEffort;
-  if (0 != integerEffort) {
-    if (currentEffort > 0) {
-      clockwise(timeout);
-    }
-    else {
-      anticlockwise(timeout);
-    }
-  }
-  currentEffort = 0.0;
+  unsigned long duration = millis() - lastMeasuredTime;
+  if (duration >= 1000 / updateFrequency) 
+  {
+    detachInterrupt(0);
+
+    float fullPosition = joint_state_message.position + radiansPerEncoderPulse * encoderPulses;
+    int fullCirclesCount = (int)(fullPosition / TWO_PI);
+    joint_state_message.position = fullPosition - fullCirclesCount * TWO_PI;
+    joint_state_message.velocity = radiansPerEncoderPulse * encoderPulses / duration; 
   
-  nh.spinOnce();
-}
+    lastMeasuredTime = millis();
+    encoderPulses = 0;
+    attachInterrupt(0, encoderPulsesCounter, FALLING);
 
-void anticlockwise(int timeout)
-{
-  for(int i = 0; i < 8; i++)
-  {
-    setOutput(i);
-    delayMicroseconds(timeout);
+    joint_state_publisher.publish(&joint_state_message);
   }
+  
+  node_handle.spinOnce();
 }
 
-void clockwise(int timeout)
-{
-  for(int i = 7; i >= 0; i--)
-  {
-    setOutput(i);
-    delayMicroseconds(timeout);
-  }
-}
-
-void setOutput(int out)
-{
-  digitalWrite(motorPin1, bitRead(lookup[out], 0));
-  digitalWrite(motorPin2, bitRead(lookup[out], 1));
-  digitalWrite(motorPin3, bitRead(lookup[out], 2));
-  digitalWrite(motorPin4, bitRead(lookup[out], 3));
-}
