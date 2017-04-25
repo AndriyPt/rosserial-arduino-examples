@@ -8,14 +8,13 @@ using first_hardware::FirstRobotHW;
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "first_hardware_node");
-  ros::NodeHandle nh;
-  ros::NodeHandle private_node_handle("~");
+  ros::NodeHandle node_handle;
   ros::CallbackQueue queue;
-  nh.setCallbackQueue(&queue);
+  node_handle.setCallbackQueue(&queue);
 
   FirstRobotHW robot;
-  robot.init(nh, private_node_handle);
-  controller_manager::ControllerManager cm(&robot, nh);
+  robot.init(node_handle);
+  controller_manager::ControllerManager controller_manager(&robot, node_handle);
 
   ros::AsyncSpinner spinner(4, &queue);
   spinner.start();
@@ -28,7 +27,7 @@ int main(int argc, char** argv)
      ros::Duration d = ros::Time::now() - ts;
      ts = ros::Time::now();
      robot.read(ts, d);
-     cm.update(ts, d);
+     controller_manager.update(ts, d);
      robot.write(ts, d);
      rate.sleep();
   }
