@@ -6,7 +6,7 @@ wheel_velocity_controller:
   type: effort_controllers/JointVelocityController
   joint: wheel_joint
   pid:
-    p: 10.0
+    p: 1.0
     i: 0.0
     d: 0.0
     i_clamp: 1000.0

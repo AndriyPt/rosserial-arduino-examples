@@ -19,13 +19,13 @@ unsigned int updateFrequency = 10;
 
 void commandCallback(const std_msgs::Float32& command_message)
 {
-  joint_state_message.effort = command_message.data;
+  joint_state_message.effort = max(0, min(100.0, command_message.data));
   if (joint_state_message.effort < 0.1)
   {
     motorDutyCycle = 0;
   }
   else {
-    motorDutyCycle = map((int)(joint_state_message.effort * 100), 0, 1000, 80, 127); // limit PWM due to interuptions overload :)
+    motorDutyCycle = map((int)(joint_state_message.effort * 10), 0, 1000, 60, 100); // limit PWM due to interuptions overload :)
   }
   analogWrite(motorPwmPin, motorDutyCycle);
 }
@@ -38,7 +38,7 @@ void encoderPulsesCounter()
 //  if(millis() - lastInterrupt > 1)
 //  {
     encoderPulses++;
-    lastInterrupt = millis();
+//    lastInterrupt = millis();
 //  }
 }
 
@@ -52,10 +52,13 @@ void onTimer()
   float fullPosition = joint_state_message.position + radiansPerEncoderPulse * encoderPulses;
   int fullCirclesCount = (int)(fullPosition / TWO_PI);
   joint_state_message.position = fullPosition - fullCirclesCount * TWO_PI;
+//  joint_state_message.position = motorDutyCycle;
   joint_state_message.velocity = radiansPerEncoderPulse * encoderPulses * updateFrequency;
+//  joint_state_message.velocity = joint_state_message.effort;
 
   encoderPulses = 0;
   joint_state_publisher.publish(&joint_state_message);
+  node_handle.spinOnce();
 
   Timer1.attachInterrupt(onTimer);
   attachInterrupt(digitalPinToInterrupt(encoderPin), encoderPulsesCounter, RISING);
@@ -83,4 +86,5 @@ void setup()
 void loop()
 {
   node_handle.spinOnce();
+  delay(1);
 }

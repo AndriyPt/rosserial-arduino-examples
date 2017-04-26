@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
   ros::Time ts = ros::Time::now();
 
-  ros::Rate rate(50);
+  ros::Rate rate(10);
   while (ros::ok())
   {
      ros::Duration d = ros::Time::now() - ts;
