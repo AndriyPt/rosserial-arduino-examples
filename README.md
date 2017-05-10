@@ -26,8 +26,44 @@ docker run -it --name meetup_demo --privileged -e DISPLAY  -e LOCAL_USER_ID=$(id
 ## Setup
 
 ### Workspace installation
+
+Go to *~/workspace/src* folder on Docker container.
+Clone repository
+```bash
+git clone https://github.com/AndriyPt/ros-meetup-examples.git
+```
+Got to *~/workspace*.
+Install dependencies.
+```bash
+rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
+```
+
+Compile source code
+```bash
+catkin_make
+```
+and
+```bash
+source ~/workspace/devel/setup.bash
+```
+
 ### Install Arduino
+Download and extract Arduino IDE in home folder.
+
 ### Setup ros_serial_arduino
+In Arduino's libraries folder run
+```bash
+source ~/workspace/devel/setup.bash
+rm -rf ros_lib
+rosrun rosserial_arduino make_libraries.py .
+```
+More details can be found [here](http://wiki.ros.org/rosserial_arduino/Tutorials/Arduino%20IDE%20Setup).
+
+## Robot model preview
+In order to check robot's URDF and move it's joint run
+```bash
+roslaunch first_description display.launch gui:=True
+```
 
 ## Simulation
 ```bash
@@ -37,4 +73,10 @@ roslaunch first_launch simulation.launch
 ## Real Hardware 
 ```bash
 roslaunch first_launch real_robot.launch
+```
+
+## Tools
+Different tools are available in RQT
+```bash
+rqt
 ```

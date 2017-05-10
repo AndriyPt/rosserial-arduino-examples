@@ -7,7 +7,7 @@
 ros::NodeHandle node_handle;
 first_msgs::JointState joint_state_message;
 
-const int motorPwmPin = 10;
+const int motorPwmPin = 9;
 const int buildInLedPin = 13;
 const int encoderPin = 2;
 const float radiansPerEncoderPulse = PI * 0.1;
@@ -25,7 +25,8 @@ void commandCallback(const std_msgs::Float32& command_message)
     motorDutyCycle = 0;
   }
   else {
-    motorDutyCycle = map((int)(joint_state_message.effort * 10), 0, 1000, 60, 100); // limit PWM due to interuptions overload :)
+    // limit PWM due to interruptions overload :)
+    motorDutyCycle = map((int)(joint_state_message.effort * 10), 0, 1000, 60, 100);
   }
   analogWrite(motorPwmPin, motorDutyCycle);
 }
@@ -35,11 +36,7 @@ ros::Publisher joint_state_publisher("hardware_motor_state", &joint_state_messag
 
 void encoderPulsesCounter()
 {
-//  if(millis() - lastInterrupt > 1)
-//  {
     encoderPulses++;
-//    lastInterrupt = millis();
-//  }
 }
 
 void onTimer()
@@ -52,9 +49,7 @@ void onTimer()
   float fullPosition = joint_state_message.position + radiansPerEncoderPulse * encoderPulses;
   int fullCirclesCount = (int)(fullPosition / TWO_PI);
   joint_state_message.position = fullPosition - fullCirclesCount * TWO_PI;
-//  joint_state_message.position = motorDutyCycle;
   joint_state_message.velocity = radiansPerEncoderPulse * encoderPulses * updateFrequency;
-//  joint_state_message.velocity = joint_state_message.effort;
 
   encoderPulses = 0;
   joint_state_publisher.publish(&joint_state_message);
