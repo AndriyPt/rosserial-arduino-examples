@@ -1,4 +1,4 @@
-# ros-meetup-examples
+# rosserial-arduino-examples
 ## Hardware 
   * [FC-03](https://www.aliexpress.com/item/Tacho-sensor-Slot-type-Optocoupler-Tacho-generator-Counter-Module-for-Arduino-for-Raspberry-pi/32319062749.html) 
   * Toy DC motor
