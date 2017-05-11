@@ -10,7 +10,9 @@
     </plugin>
   </gazebo>
 
- <gazebo reference="base_link">
+  <gazebo reference="base_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
     <material>Gazebo/White</material>
   </gazebo>
 

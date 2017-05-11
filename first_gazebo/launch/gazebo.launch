@@ -23,6 +23,7 @@
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
 	args="-urdf -model first -param robot_description"/>
 
+  <rosparam file="$(find first_control)/config/gazebo/first_control.yml" command="load" />
   <include file="$(find first_control)/launch/control.launch" />
 
 </launch>

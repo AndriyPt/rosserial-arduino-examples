@@ -8,5 +8,7 @@
            command="$(find xacro)/xacro.py --inorder '$(find first_description)/robot/first.rviz.xacro'" />
 
     <include file="$(find first_hardware)/launch/hardware.launch" />
+
+    <rosparam file="$(find first_control)/config/hardware/first_control.yml" command="load" />
     <include file="$(find first_control)/launch/control.launch" />
 </launch>
