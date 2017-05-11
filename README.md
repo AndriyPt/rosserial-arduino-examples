@@ -30,7 +30,7 @@ docker run -it --name meetup_demo --privileged -e DISPLAY  -e LOCAL_USER_ID=$(id
 Go to *~/workspace/src* folder on Docker container.
 Clone repository
 ```bash
-git clone https://github.com/AndriyPt/ros-meetup-examples.git
+git clone https://github.com/AndriyPt/rosserial-arduino-examples.git
 ```
 Got to *~/workspace*.
 Install dependencies.
