@@ -5,8 +5,9 @@
 
 ## Arduino and wiring
 I have used Arduino Mega 2560.
+Also there is firmware for Arduino M0.
 
-Pin 2 was connected to FC-03 digital output.
+Pin 2 (for Arduino M0 - pin 3) was connected to FC-03 digital output.
 5V and GND was connected to appropriate inputs of FC-03.
 
 Motor was connected using this circuit:

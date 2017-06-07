@@ -10,7 +10,7 @@ ros::NodeHandle node_handle;
 first_msgs::JointState joint_state_message;
 
 const int motorPwmPin = 10;
-const int encoderPin = 2;
+const int encoderPin = 3;
 const float radiansPerEncoderPulse = PI * 0.1;
 
 int motorDutyCycle = 0;
