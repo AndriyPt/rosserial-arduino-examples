@@ -27,7 +27,7 @@ void commandCallback(const std_msgs::Float32& command_message)
   }
   else {
     // limit PWM due to interruptions overload :)
-    motorDutyCycle = map((int)(joint_state_message.effort * 10), 0, 1000, 60, 100);
+    motorDutyCycle = map((int)(joint_state_message.effort * 10), 0, 1000, 50, 100);
   }
   analogWrite(motorPwmPin, motorDutyCycle);
 }
@@ -61,6 +61,8 @@ void loop()
 {
   detachInterrupt(digitalPinToInterrupt(encoderPin));
 
+  motorDutyCycle = 0;
+
   float fullPosition = joint_state_message.position + radiansPerEncoderPulse * encoderPulses;
   int fullCirclesCount = (int)(fullPosition / TWO_PI);
   joint_state_message.position = fullPosition - fullCirclesCount * TWO_PI;
@@ -69,6 +71,9 @@ void loop()
   encoderPulses = 0;
   joint_state_publisher.publish(&joint_state_message);
   node_handle.spinOnce();
+
+  // It will stop motor in case if there is no control signal
+  analogWrite(motorPwmPin, motorDutyCycle);
 
   attachInterrupt(digitalPinToInterrupt(encoderPin), encoderPulsesCounter, RISING);
 
