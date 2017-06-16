@@ -15,7 +15,7 @@ const float radiansPerEncoderPulse = PI * 0.1;
 
 int motorDutyCycle = 0;
 volatile unsigned int encoderPulses = 0;
-volatile unsigned long lastInterrupt = 0;
+static volatile unsigned long debounce = 0;
 unsigned int updateFrequency = 10;
 
 void commandCallback(const std_msgs::Float32& command_message)
@@ -37,7 +37,10 @@ ros::Publisher joint_state_publisher("hardware_motor_state", &joint_state_messag
 
 void encoderPulsesCounter()
 {
+  if (micros() - debounce > 500) {
+    debounce = micros();
     encoderPulses++;
+  };
 }
 
 void setup()
