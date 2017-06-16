@@ -9,8 +9,9 @@ Also there is firmware for Arduino M0.
 
 Pin 2 (for Arduino M0 - pin 3) was connected to FC-03 digital output.
 5V and GND was connected to appropriate inputs of FC-03.
-The following hardware RC filter was applied for FC-03 digital output 
-![Hardware RC filter](http://i.imgur.com/bFJ8vnQ.png "Hardware RC filter") 
+The following hardware RC filter was applied for FC-03 digital output:
+
+![Hardware RC filter](http://i.imgur.com/bFJ8vnQ.png "Hardware RC filter")  
 More details about filter can be found [here](https://forum.arduino.cc/index.php?topic=342650.0).
 
 Motor was connected using this circuit:
