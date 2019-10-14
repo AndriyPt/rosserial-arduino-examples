@@ -20,16 +20,24 @@ ENV DISPLAY :1.0
 
 ENV QT_X11_NO_MITSHM 1
 
+USER root
+
+RUN set -x && \
+    \
+    echo "Installing and compiling source code" && \
+    wget -O /tmp/oneliner_deploy "$( echo "$remote_deploy_script" | sed 's/#/%23/g' )" && \
+    chmod 755 /tmp/oneliner_deploy && \
+    gosu $MY_USERNAME /tmp/oneliner_deploy -o AndriyPt -r rosserial-arduino-examples -b kinetic-devel -v kinetic && \
+    \
+    echo "Clean up" && \
+    sudo apt-get clean && \
+    sudo rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.ansible /root/.gitconfig /root/.cache
+
 USER user
 
 COPY startup.sh /home/user/
 
 RUN set -x && \
-
-    echo "Installing and compiling source code" && \
-    wget -O /tmp/oneliner_deploy "$( echo "$remote_deploy_script" | sed 's/#/%23/g' )" && \
-    chmod 755 /tmp/oneliner_deploy && \
-    gosu $MY_USERNAME /tmp/oneliner_deploy -o AndriyPt -r rosserial-arduino-examples -b kinetic-devel -v kinetic && \
     \
     echo "Sourcing workspace in .bashrc" && \
     echo 'source /home/$MY_USERNAME/workspace/rosserial-arduino-examples/base/devel/setup.bash' >> /home/$MY_USERNAME/.bashrc && \
