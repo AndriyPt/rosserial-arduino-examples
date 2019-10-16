@@ -6,6 +6,7 @@
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="verbose" default="true"/>
+  <arg name="gzweb" default="false"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find first_gazebo)/worlds/first.world"/>
@@ -20,8 +21,20 @@
   <param name="robot_description"
 	 command="$(find xacro)/xacro.py --inorder '$(find first_description)/robot/first.gazebo.xacro'" />
 
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-	args="-urdf -model first -param robot_description"/>
+  <group unless="$(arg gzweb)">
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model first -param robot_description"/>
+  </group>
+
+  <group if="$(arg gzweb)">
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
+      args="-urdf -model first -file /tmp/first.gazebo.urdf -package_to_model" respawn="false" output="screen" >
+      <param name="dummy_to_generate_gazebo_urdf_file"
+        command="rosrun xacro xacro.py -o /tmp/first.gazebo.urdf '$(find first_description)/robot/first.gazebo.xacro'" />
+      <param name="dummy_to_convert_package_to_model"
+        command="sed -i s@package://@model://@g /tmp/first.gazebo.urdf" />
+    </node>
+  </group>
 
   <rosparam file="$(find first_control)/config/gazebo/first_control.yml" command="load" />
   <include file="$(find first_control)/launch/control.launch" />
